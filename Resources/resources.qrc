@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/res">
+        <file>menuIcon.png</file>
+        <file>encodeIcon.png</file>
+        <file>decodeIcon.png</file>
+        <file>appIcon.png</file>
+    </qresource>
+</RCC>
