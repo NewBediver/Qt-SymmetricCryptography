@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "MainTask/maintask.h"
+
 #include <QMainWindow>
 #include <QMenuBar>
 #include <QMenu>
@@ -16,7 +18,6 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-
 private:
     void createMenuBar();
     void createStatusBar();
@@ -29,6 +30,10 @@ private:
     template <class Creature>                                                        //
     Creature* createMenuElement(QString name);                                       //
     //===============================================================================//
+
+    //===============Task=============//
+    QWidget* centralWidget;           //
+    //================================//
 
     //===============Status bar=============//
     QStatusBar* statusBar;                  //
@@ -59,7 +64,27 @@ private:
     QAction* decodeGammingCipherFeedbackAction;     //
     QAction* encodeImitationInsertAction;           //
     QAction* decodeImitationInsertAction;           //
+                                                    //
+    // Credits action                               //
+    QAction* aboutAction;                           //
     //==============================================//
+
+private slots:
+    //====================Task slots==================//
+    void createEncodeElectronicCodeBookTask();        //
+    void createDecodeElectronicCodeBookTask();        //
+    void createEncodeGammingTask();                   //
+    void createDecodeGammingTask();                   //
+    void createEncodeGammingOutputFeedbackTask();     //
+    void createDecodeGammingOutputFeedbackTask();     //
+    void createEncodeCipherBlockChainingTask();       //
+    void createDecodeCipherBlockChainingTask();       //
+    void createEncodeGammingCipherFeedbackTask();     //
+    void createDecodeGammingCipherFeedbackTask();     //
+    void createEncodeImitationInsertTask();           //
+    void createDecodeImitationInsertTask();           //
+    void createAboutWindow();                         //
+    //================================================//
 
 };
 

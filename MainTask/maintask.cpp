@@ -2,26 +2,32 @@
 
 MainTask::MainTask(QWidget *parent) : QWidget(parent)
 {
-    //Create task labal
-    taskLabel = new QLabel();
-    taskLabel->setText("Encoded text:");
-
     //Create task edit field
     taskTextEdit = new QTextEdit();
 
+    //Create task label
+    taskLabel = new QLabel();
+    changeTaskLabelText("Encoded text:");
+
+    //Set taskLabel buddy
+    taskLabel->setBuddy(taskTextEdit);
+
     //Create task button
     makeActionPushButton = new QPushButton();
-    makeActionPushButton->setText("Do something");
     makeActionPushButton->setEnabled(false);
-    connect(taskTextEdit, SIGNAL(textChanged()), this, SLOT(tryMakeActionPushButtonEnabled()));
-
-    //Create result label
-    resultLabel = new QLabel();
-    resultLabel->setText("Result text:");
+    changeMakeActionPushButtonText("Do something");
+    connect(taskTextEdit, SIGNAL(textChanged()), this, SLOT(tryMakeActionPushButtonEnabled()));    
 
     //Create output text edit and make it ReadOnly
     resultTextEdit = new QTextEdit();
     resultTextEdit->setReadOnly(true);
+
+    //Create result label
+    resultLabel = new QLabel();
+    changeResultLabelText("Result text:");
+
+    //Set resultLabel buddy
+    resultLabel->setBuddy(resultTextEdit);
 
     //Add task widgets to taskLayout
     taskLayout = new QHBoxLayout();
@@ -46,7 +52,31 @@ void MainTask::tryMakeActionPushButtonEnabled()
     }
 }
 
+void MainTask::changeTaskLabelText(QString newText)
+{
+    taskLabel->setText(newText);
+    taskTextEdit->setStatusTip(taskLabel->text().mid(0, taskLabel->text().length()-1));
+}
+
+void MainTask::changeResultLabelText(QString newText)
+{
+    resultLabel->setText(newText);
+    resultTextEdit->setStatusTip(resultLabel->text().mid(0, resultLabel->text().length()-1));
+}
+
+void MainTask::changeMakeActionPushButtonText(QString newText)
+{
+    makeActionPushButton->setText(newText);
+    makeActionPushButton->setStatusTip("Let's " + makeActionPushButton->text());
+}
+
 MainTask::~MainTask()
 {
-
+    delete taskTextEdit;
+    delete resultTextEdit;
+    delete taskLabel;
+    delete resultLabel;
+    delete makeActionPushButton;
+    delete taskLayout;
+    delete mainLayout;
 }

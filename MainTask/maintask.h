@@ -15,9 +15,14 @@ public:
     explicit MainTask(QWidget *parent = nullptr);
      ~MainTask();
 
-private:
+protected:
+    // Change form elements text
+    void changeTaskLabelText(QString);
+    void changeResultLabelText(QString);
+    void changeMakeActionPushButtonText(QString);
 
 
+protected:
     // Elements on form
     QTextEdit* taskTextEdit;
     QTextEdit* resultTextEdit;

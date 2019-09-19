@@ -25,12 +25,38 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        AboutWindow/aboutwindow.cpp \
         MainTask/maintask.cpp \
+        Tasks/CBC/decodecipherblockchaining.cpp \
+        Tasks/CBC/encodecipherblockchaining.cpp \
+        Tasks/ECB/decodeelectroniccodebooktask.cpp \
+        Tasks/ECB/encodeelectroniccodebooktask.cpp \
+        Tasks/Gamming/decodegammingtask.cpp \
+        Tasks/Gamming/encodegammingtask.cpp \
+        Tasks/Gamming_CFB/decodegammingcipherfeedbacktask.cpp \
+        Tasks/Gamming_CFB/encodegammingcipherfeedbacktask.cpp \
+        Tasks/Gamming_OFB/decodegammingoutputfeedbacktask.cpp \
+        Tasks/Gamming_OFB/encodegammingoutputfeedbacktask.cpp \
+        Tasks/Imitation_Insert/decodeimitationinserttask.cpp \
+        Tasks/Imitation_Insert/encodeimitationinserttask.cpp \
         main.cpp \
         mainwindow.cpp
 
 HEADERS += \
+        AboutWindow/aboutwindow.h \
         MainTask/maintask.h \
+        Tasks/CBC/decodecipherblockchaining.h \
+        Tasks/CBC/encodecipherblockchaining.h \
+        Tasks/ECB/decodeelectroniccodebooktask.h \
+        Tasks/ECB/encodeelectroniccodebooktask.h \
+        Tasks/Gamming/decodegammingtask.h \
+        Tasks/Gamming/encodegammingtask.h \
+        Tasks/Gamming_CFB/decodegammingcipherfeedbacktask.h \
+        Tasks/Gamming_CFB/encodegammingcipherfeedbacktask.h \
+        Tasks/Gamming_OFB/decodegammingoutputfeedbacktask.h \
+        Tasks/Gamming_OFB/encodegammingoutputfeedbacktask.h \
+        Tasks/Imitation_Insert/decodeimitationinserttask.h \
+        Tasks/Imitation_Insert/encodeimitationinserttask.h \
         mainwindow.h
 
 # Default rules for deployment.
