@@ -3,10 +3,12 @@
 
 #include <QWidget>
 #include <QTextEdit>
+#include <QLineEdit>
 #include <QLabel>
 #include <QPushButton>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QFormLayout>
 
 class MainTask : public QWidget
 {
@@ -21,7 +23,6 @@ protected:
     void changeResultLabelText(QString);
     void changeMakeActionPushButtonText(QString);
 
-
 protected:
     // Elements on form
     QTextEdit* taskTextEdit;
@@ -31,12 +32,16 @@ protected:
     QPushButton* makeActionPushButton;
     QHBoxLayout* taskLayout;
     QVBoxLayout* mainLayout;
+    QLabel* keyLabel;
+    QLineEdit* keyLineEdit;
+    QFormLayout* keyFormLayout;
 
 signals:
 
 public slots:
     // Makes makeActionPushButton ba active only when taskTextEdit isn't empty
     void tryMakeActionPushButtonEnabled();
+    virtual void mainMethod();
 
 };
 

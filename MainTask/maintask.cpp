@@ -1,5 +1,7 @@
 #include "maintask.h"
 
+#include <QRegExpValidator>
+
 MainTask::MainTask(QWidget *parent) : QWidget(parent)
 {
     //Create task edit field
@@ -12,11 +14,24 @@ MainTask::MainTask(QWidget *parent) : QWidget(parent)
     //Set taskLabel buddy
     taskLabel->setBuddy(taskTextEdit);
 
+    //Create key label
+    keyLabel = new QLabel();
+    keyLabel->setText("Key:");
+
+    //Create key edit field
+    keyLineEdit = new QLineEdit();
+    keyLineEdit->setToolTip("Enter key");
+    keyLineEdit->setValidator(new QRegExpValidator(QRegExp("[А-Яа-яA-Za-z0-9]{0,16}")));
+
+    //Set keyLabel buddy
+    keyLabel->setBuddy(keyLineEdit);
+
     //Create task button
     makeActionPushButton = new QPushButton();
     makeActionPushButton->setEnabled(false);
     changeMakeActionPushButtonText("Do something");
-    connect(taskTextEdit, SIGNAL(textChanged()), this, SLOT(tryMakeActionPushButtonEnabled()));    
+    connect(taskTextEdit, SIGNAL(textChanged()), this, SLOT(tryMakeActionPushButtonEnabled()));
+    connect(keyLineEdit, SIGNAL(textChanged()), this, SLOT(tryMakeActionPushButtonEnabled()));
 
     //Create output text edit and make it ReadOnly
     resultTextEdit = new QTextEdit();
@@ -29,6 +44,10 @@ MainTask::MainTask(QWidget *parent) : QWidget(parent)
     //Set resultLabel buddy
     resultLabel->setBuddy(resultTextEdit);
 
+    //Add key elements to form layout
+    keyFormLayout = new QFormLayout();
+    keyFormLayout->addRow(keyLabel, keyLineEdit);
+
     //Add task widgets to taskLayout
     taskLayout = new QHBoxLayout();
     taskLayout->addWidget(taskTextEdit);
@@ -36,15 +55,18 @@ MainTask::MainTask(QWidget *parent) : QWidget(parent)
 
     //Add everything to mainLayout
     mainLayout = new QVBoxLayout(this);
+    mainLayout->addLayout(keyFormLayout);
     mainLayout->addWidget(taskLabel);
     mainLayout->addLayout(taskLayout);
     mainLayout->addWidget(resultLabel);
     mainLayout->addWidget(resultTextEdit);
+
+    connect(makeActionPushButton, SIGNAL(clicked()), this, SLOT(mainMethod()));
 }
 
 void MainTask::tryMakeActionPushButtonEnabled()
 {
-    if (taskTextEdit->toPlainText().isEmpty()) {
+    if (taskTextEdit->toPlainText().isEmpty() || keyLineEdit->text().isEmpty()) {
         makeActionPushButton->setEnabled(false);
     }
     else {
@@ -70,6 +92,8 @@ void MainTask::changeMakeActionPushButtonText(QString newText)
     makeActionPushButton->setStatusTip("Let's " + makeActionPushButton->text());
 }
 
+void MainTask::mainMethod() {}
+
 MainTask::~MainTask()
 {
     delete taskTextEdit;
@@ -77,6 +101,9 @@ MainTask::~MainTask()
     delete taskLabel;
     delete resultLabel;
     delete makeActionPushButton;
-    delete taskLayout;
-    delete mainLayout;
+    delete taskLayout;    
+    delete keyLabel;
+    delete keyLineEdit;
+    delete keyFormLayout;
+    delete mainLayout;  
 }
