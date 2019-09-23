@@ -41,6 +41,8 @@ signals:
 public slots:
     // Makes makeActionPushButton ba active only when taskTextEdit isn't empty
     void tryMakeActionPushButtonEnabled();
+    void checkTaskTextEdit();
+    bool checkValidTaskTextEdit(QRegExp);
     virtual void mainMethod();
 
 };

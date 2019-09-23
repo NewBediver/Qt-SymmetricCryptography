@@ -25,24 +25,26 @@ void EncodeElectronicCodeBookTask::mainMethod()
     };
 
     // Key array 32 * 8 = 256 bits (0 padding if key less than 256 bits)
-    QByteArray keyArray = keyLineEdit->text().toUtf8();
+    QByteArray keyArray = QByteArray::fromHex(keyLineEdit->text().toLatin1());
     keyArray.append(32 - keyArray.length(), 0x00);
 
     // Creates eight 32 bits arrays of key and fill them in reverse order
-    QByteArray X0, X1, X2, X3, X4, X5, X6, X7;
-    for (int i = 1; i <= 4; ++i) {
-        X0.append(keyArray.at(4 - i));
-        X1.append(keyArray.at(8 - i));
-        X2.append(keyArray.at(12 - i));
-        X3.append(keyArray.at(16 - i));
-        X4.append(keyArray.at(20 - i));
-        X5.append(keyArray.at(24 - i));
-        X6.append(keyArray.at(28 - i));
-        X7.append(keyArray.at(32 - i));
+    QBitArray X0(32), X1(32), X2(32), X3(32), X4(32), X5(32), X6(32), X7(32);
+    for (int i = 3; i >= 0; --i) {
+        for (int j = 0; j <= 7; ++j) {
+            X0.setBit((3 - i) * 8 + j, (1 << j) & keyArray[i]);
+            X1.setBit((3 - i) * 8 + j, (1 << j) & keyArray[i + 4]);
+            X2.setBit((3 - i) * 8 + j, (1 << j) & keyArray[i + 8]);
+            X3.setBit((3 - i) * 8 + j, (1 << j) & keyArray[i + 12]);
+            X4.setBit((3 - i) * 8 + j, (1 << j) & keyArray[i + 16]);
+            X5.setBit((3 - i) * 8 + j, (1 << j) & keyArray[i + 20]);
+            X6.setBit((3 - i) * 8 + j, (1 << j) & keyArray[i + 24]);
+            X7.setBit((3 - i) * 8 + j, (1 << j) & keyArray[i + 28]);
+        }
     }
 
     // Text array (divisible on 8 * 8 = 64 bits)
-    QByteArray textArray = taskTextEdit->toPlainText().toUtf8();
+    QByteArray textArray = QByteArray::fromHex(taskTextEdit->toPlainText().toLatin1());
     if (textArray.length() % 8 != 0) {
         textArray.append(8 - textArray.length() % 8, 0x00);
     }
@@ -53,59 +55,63 @@ void EncodeElectronicCodeBookTask::mainMethod()
     int numOfBlocks = textArray.length() / 8;
     for (int i = 0; i < numOfBlocks; ++i) {
         // Creates two 32 bits arrays N1 and N2 and fill them in reverse order
-        QByteArray N1;
-        QByteArray N2;
+        QBitArray N1(32);
+        QBitArray N2(32);
         for (int j = 8 * i + 3; j >= 8 * i; --j) {
-            N1.append(textArray.at(j));
+            for (int k = 0; k < 8; ++k) {
+                N1.setBit((8 * i + 3 - j) * 8 + k, (1 << k) & static_cast<int>(textArray[j]));
+            }
         }
         for (int j = 8 * i + 7; j >= 8 * i + 4; --j) {
-            N2.append(textArray.at(j));
+            for (int k = 0; k < 8; ++k) {
+                N2.setBit((8 * i + 7 - j) * 8 + k, (1 << k) & static_cast<int>(textArray[j]));
+            }
         }
 
         // Then we have 32 rounds of encryption
         // First 24 rounds use X0 X1 X2 X3 X4 X5 X6 X7 3 times
         for (int j = 0; j < 24; ++j) {
             // Save N1 source value
-            QByteArray tempN1(N1);
+            QBitArray tempN1(N1);
 
             // Choose the right Xj (depends on round number)
-            QByteArray X;
+            QBitArray X;
             if (j % 8 == 0) {
-                X.append(X0);
+                X = X0;
             }
             else if (j % 8 == 1) {
-                X.append(X1);
+                X = X1;
             }
             else if (j % 8 == 2) {
-                X.append(X2);
+                X = X2;
             }
             else if (j % 8 == 3) {
-                X.append(X3);
+                X = X3;
             }
             else if (j % 8 == 4) {
-                X.append(X4);
+                X = X4;
             }
             else if (j % 8 == 5) {
-                X.append(X5);
+                X = X5;
             }
             else if (j % 8 == 6) {
-                X.append(X6);
+                X = X6;
             }
             else if (j % 8 == 7) {
-                X.append(X7);
+                X = X7;
             }
 
             // Sum N1 and X mod 2^32 and result saves in N1
-            summatorCM1mod2pow32(N1, X);
+            N1 = summatorCM1mod2pow32(N1, X);
 
             // All bytes in N1 changes it's value with the S matrix and result saves in N1
-            kTransformBlock(N1, S);
+            N1 = kTransformBlock(N1, S);
 
             // Round rotate N1 on 11 bits to elder bits and result saves in N1
-            rRotation11Block(N1);
+            N1 = rRotation11Block(N1);
 
             // Sum N1 and N2 mod 2 and result saves in N1
-            summatorCM2mod2pow1(N1, N2);
+            N1 = summatorCM2mod2pow1(N1, N2);
 
             // Return old N1 value to N2
             N2 = tempN1;
@@ -114,132 +120,164 @@ void EncodeElectronicCodeBookTask::mainMethod()
         // Last 8 rounds use X7 X6 X5 X4 X3 X2 X1 X0 1 time
         for (int j = 0; j < 8; ++j) {
             // Save N1 source value
-            QByteArray tempN1(N1);
+            QBitArray tempN1(N1);
 
             // Choose the right Xj (depends on round number)
-            QByteArray X;
+            QBitArray X;
             if (j % 8 == 0) {
-                X.append(X7);
+                X = X7;
             }
             else if (j % 8 == 1) {
-                X.append(X6);
+                X = X6;
             }
             else if (j % 8 == 2) {
-                X.append(X5);
+                X = X5;
             }
             else if (j % 8 == 3) {
-                X.append(X4);
+                X = X4;
             }
             else if (j % 8 == 4) {
-                X.append(X3);
+                X = X3;
             }
             else if (j % 8 == 5) {
-                X.append(X2);
+                X = X2;
             }
             else if (j % 8 == 6) {
-                X.append(X1);
+                X = X1;
             }
             else if (j % 8 == 7) {
-                X.append(X0);
+                X = X0;
             }
 
             // Sum N1 and X mod 2^32 and result saves in N1
-            summatorCM1mod2pow32(N1, X);
+            N1 = summatorCM1mod2pow32(N1, X);
 
             // All bytes in N1 changes it's value with the S matrix and result saves in N1
-            kTransformBlock(N1, S);
+            N1 = kTransformBlock(N1, S);
 
             // Round rotate N1 on 11 bits to elder bits and result saves in N1
-            rRotation11Block(N1);
+            N1 = rRotation11Block(N1);
 
-            // Sum N1 and N2 mod 2 and result saves in N1
-            summatorCM2mod2pow1(N1, N2);
+            // If it is not 32 round
+            if (j != 7) {
+                // Sum N1 and N2 mod 2 and result saves in N1
+                N1 = summatorCM2mod2pow1(N1, N2);
 
-            // Return old N1 value to N2
-            N2 = tempN1;
+                // Return old N1 value to N2
+                N2 = tempN1;
+            }
+            else {
+                // Sum N1 and N2 mod 2 and result saves in N2
+                N2 = summatorCM2mod2pow1(N1, N2);
+
+                // Return old N1 value to N1
+                N1 = tempN1;
+            }
         }
 
         // Restore result text from N1 and N2 int normal order
-        for (int i = N1.length() - 1; i >= 0; --i){
-            resultText.append(N1);
+        for (int i = 3; i >= 0; --i){
+            char temp = 0x00;
+            for (int j = 7; j >= 0; --j) {
+                temp |= (N1[i * 8 + j] << j);
+            }
+            resultText.append(temp);
         }
-        for (int i = N2.length() - 1; i >= 0; --i){
-            resultText.append(N2);
+        for (int i = 3; i >= 0; --i){
+            char temp = 0x00;
+            for (int j = 7; j >= 0; --j) {
+                temp |= (N2[i * 8 + j] << j);
+            }
+            resultText.append(temp);
         }
     }
 
     // Show it in the result text edit
-    resultTextEdit->setText(QString::fromUtf8(resultText));
+    resultTextEdit->setPlainText(resultText.toHex().toUpper());
 }
 
-void EncodeElectronicCodeBookTask::summatorCM1mod2pow32(QByteArray& N1, const QByteArray& X)
+QBitArray EncodeElectronicCodeBookTask::summatorCM1mod2pow32(const QBitArray& N1, const QBitArray& X)
 {
-    unsigned int internal = 0;
-    for (int i = N1.length()-1; i >= 0; --i)
-    {
-        internal = static_cast<unsigned int>(N1.at(i)) + static_cast<unsigned int>(X.at(i)) + (internal >> 8);
-        N1[i] = static_cast<char>(internal & 0xff);
+    QBitArray res(N1);
+
+    bool rem = false;
+    for (int i = res.size() - 1; i >= 0; --i) {
+        if (res.at(i) && X.at(i)) {
+            if (rem) {
+                res[i] = true;
+            }
+            else {
+                res[i] = false;
+            }
+            rem = true;
+        }
+        else if (res.at(i) || X.at(i)) {
+            if (rem) {
+                res[i] = false;
+            }
+            else {
+                res[i] = true;
+            }
+        }
+        else {
+            res[i] = rem;
+            rem = false;
+        }
     }
+
+    return res;
 }
 
-void EncodeElectronicCodeBookTask::kTransformBlock(QByteArray& N1, const unsigned char S[8][16])
+QBitArray EncodeElectronicCodeBookTask::kTransformBlock(const QBitArray& N1, const unsigned char S[8][16])
 {
+    QBitArray res(32);
+
     int firstPartByte, secPartByte;
     for (int i = 0; i < 4; i++)
     {
+        firstPartByte = 0;
+        secPartByte = 0;
         // Takes the first 4-bits part of byte
-        firstPartByte = (N1[i] & 0xf0) >> 4;
+        for (int j = i * 8; j <= i * 8 + 3; ++j){
+            firstPartByte |= (N1.at(j) << ((i * 8 + 3) - j));
+        }
         // Takes the second 4-bits part of byte
-        secPartByte = (N1[i] & 0x0f);
+        for (int j = i * 8 + 4; j <= i * 8 + 7; ++j){
+            secPartByte |= (N1.at(j) << ((i * 8 + 7) - j));
+        }
         // Makes the swap whis the S matrix
         firstPartByte = S[i * 2][firstPartByte];
         secPartByte = S[i * 2 + 1][secPartByte];
         // Concatenates two 4-bits parts back to byte
-        N1[i] = static_cast<char>((firstPartByte << 4) | secPartByte);
-    }
-}
-
-void EncodeElectronicCodeBookTask::rRotation11Block(QByteArray& N1)
-{
-    // Create 32-bits vector and translate N1 there
-    QBitArray bitArray(32);
-    int pos = 0;
-    for (int i = 0; i < N1.length(); ++i) {
-        for (int j = 1; j < (1 << 8); j <<= 1){
-            bitArray.setBit(pos, N1.at(i) & j);
-            ++pos;
+        for (int j = i * 8; j <= i * 8 + 3; ++j) {
+            res[j] = (firstPartByte >> ((i * 8 + 3) - j)) & 0x01;
+        }
+        for (int j = i * 8 + 4; j <= i * 8 + 7; ++j) {
+            res[j] = (secPartByte >> ((i * 8 + 7) - j)) & 0x01;
         }
     }
 
-    // Takes the first 11 bits
-    QBitArray first11Bits(11);
-    for (int i = 0; i < 11; ++i) {
-        first11Bits.setBit(i, bitArray.at(i));
-    }
+    return res;
+}
 
+QBitArray EncodeElectronicCodeBookTask::rRotation11Block(const QBitArray& N1)
+{
+    QBitArray res(32);
     // Rotate last 21 bits to the start positions and add the last 11 bits to the end
-    for (int i = 11; i < bitArray.size(); ++i) {
-        bitArray.setBit(i - 11, bitArray.at(i));
+    for (int i = 11; i < N1.size(); ++i) {
+        res.setBit(i - 11, N1.at(i));
     }
-    for (int i = 0; i < first11Bits.size(); ++i) {
-        bitArray.setBit(21 + i, first11Bits.at(i));
+    for (int i = 0; i < 11; ++i) {
+        res.setBit(21 + i, N1.at(i));
     }
-
-    // Translate bit vector into byte vector N1
-    for (int i = 0; i < 4; ++i) {
-        unsigned char temp = 0;
-        for (int j = i * 8; j < i * 8 + 8; ++j) {
-            temp = static_cast<unsigned char>(bitArray.at(j) << (j % 8));
-        }
-        N1[i] = static_cast<char>(temp);
-    }
+    return res;
 }
 
-void EncodeElectronicCodeBookTask::summatorCM2mod2pow1(QByteArray& N1, const QByteArray& N2)
+QBitArray EncodeElectronicCodeBookTask::summatorCM2mod2pow1(const QBitArray& N1, const QBitArray& N2)
 {
-    for (int i = 0; i < N1.length(); i++) {
-       N1[i] = N1[i] ^ N2[i];
-    }
+    QBitArray res(N1);
+    res ^= N2;
+    return res;
 }
 
 EncodeElectronicCodeBookTask::~EncodeElectronicCodeBookTask() {}

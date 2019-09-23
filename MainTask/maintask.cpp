@@ -6,6 +6,7 @@ MainTask::MainTask(QWidget *parent) : QWidget(parent)
 {
     //Create task edit field
     taskTextEdit = new QTextEdit();
+    connect(taskTextEdit, SIGNAL(textChanged()), this, SLOT(checkTaskTextEdit()));
 
     //Create task label
     taskLabel = new QLabel();
@@ -21,7 +22,7 @@ MainTask::MainTask(QWidget *parent) : QWidget(parent)
     //Create key edit field
     keyLineEdit = new QLineEdit();
     keyLineEdit->setToolTip("Enter key");
-    keyLineEdit->setValidator(new QRegExpValidator(QRegExp("[А-Яа-яA-Za-z0-9]{0,16}")));
+    keyLineEdit->setValidator(new QRegExpValidator(QRegExp("[A-Fa-f0-9]{0,64}")));
 
     //Set keyLabel buddy
     keyLabel->setBuddy(keyLineEdit);
@@ -29,9 +30,10 @@ MainTask::MainTask(QWidget *parent) : QWidget(parent)
     //Create task button
     makeActionPushButton = new QPushButton();
     makeActionPushButton->setEnabled(false);
+    makeActionPushButton->setDefault(true);
     changeMakeActionPushButtonText("Do something");
     connect(taskTextEdit, SIGNAL(textChanged()), this, SLOT(tryMakeActionPushButtonEnabled()));
-    connect(keyLineEdit, SIGNAL(textChanged()), this, SLOT(tryMakeActionPushButtonEnabled()));
+    connect(keyLineEdit, SIGNAL(textChanged(QString)), this, SLOT(tryMakeActionPushButtonEnabled()));
 
     //Create output text edit and make it ReadOnly
     resultTextEdit = new QTextEdit();
@@ -90,6 +92,19 @@ void MainTask::changeMakeActionPushButtonText(QString newText)
 {
     makeActionPushButton->setText(newText);
     makeActionPushButton->setStatusTip("Let's " + makeActionPushButton->text());
+}
+
+void MainTask::checkTaskTextEdit()
+{
+    if (!checkValidTaskTextEdit(QRegExp("[A-Fa-f0-9]*"))) {
+        taskTextEdit->setText(taskTextEdit->toPlainText().remove(QRegExp("[^A-Fa-f0-9]")));
+        taskTextEdit->moveCursor(QTextCursor::End);
+    }
+}
+
+bool MainTask::checkValidTaskTextEdit(QRegExp reg)
+{
+    return reg.exactMatch(taskTextEdit->toPlainText());
 }
 
 void MainTask::mainMethod() {}
