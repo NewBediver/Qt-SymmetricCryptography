@@ -186,17 +186,17 @@ void DecodeCipherBlockChaining::mainMethod()
         xorR1WithN1AndN2(R1, N1, N2);
 
         // Restore result text from N1 and N2 int normal order
-        for (int i = 3; i >= 0; --i){
+        for (int j = 3; j >= 0; --j){
             char temp = 0x00;
-            for (int j = 7; j >= 0; --j) {
-                temp |= (N1[i * 8 + j] << j);
+            for (int k = 7; k >= 0; --k) {
+                temp |= (N1[j * 8 + k] << k);
             }
             resultText.append(temp);
         }
-        for (int i = 3; i >= 0; --i){
+        for (int j = 3; j >= 0; --j){
             char temp = 0x00;
-            for (int j = 7; j >= 0; --j) {
-                temp |= (N2[i * 8 + j] << j);
+            for (int k = 7; k >= 0; --k) {
+                temp |= (N2[j * 8 + k] << k);
             }
             resultText.append(temp);
         }
