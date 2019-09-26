@@ -49,7 +49,7 @@ private:
     QMenu* gammingOutputFeedbackMenu;   //(Output FeedBack, OFB)
     QMenu* cipherBlockChainingMenu;     //(Cipher Block Chaining, CBC)
     QMenu* gammingCipherFeedbackMenu;   //(Cipher Feedback, CFB)
-    //QMenu* imitationInsertMenu;                     //
+    QMenu* messageAuthenticationCodeMenu;           //
                                                     //
     // Encode/Decode actions                        //
     QAction* encodeElectronicCodeBookAction;        //
@@ -62,8 +62,11 @@ private:
     QAction* decodeCipherBlockChainingAction;       //
     QAction* encodeGammingCipherFeedbackAction;     //
     QAction* decodeGammingCipherFeedbackAction;     //
-    //QAction* encodeImitationInsertAction;           //
-    //QAction* decodeImitationInsertAction;           //
+    QAction* messageAuthenticationCodeECBAction;    //
+    QAction* messageAuthenticationCodeCBCAction;    //
+    QAction* messageAuthenticationCodeGammingAction;//
+    QAction* messageAuthenticationCodeGammingOFBAction;//
+    QAction* messageAuthenticationCodeGammingCFBAction;//
                                                     //
     // Credits action                               //
     QAction* aboutAction;                           //
@@ -81,8 +84,11 @@ private slots:
     void createDecodeCipherBlockChainingTask();       //
     void createEncodeGammingCipherFeedbackTask();     //
     void createDecodeGammingCipherFeedbackTask();     //
-    //void createEncodeImitationInsertTask();           //
-    //void createDecodeImitationInsertTask();           //
+    void createECBMACTask();                          //
+    void createCBCMACTask();                          //
+    void createGammingMACTask();                      //
+    void createGammingOFBMACTask();                   //
+    void createGammingCFBMACTask();                   //
     void createAboutWindow();                         //
     //================================================//
 

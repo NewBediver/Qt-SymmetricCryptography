@@ -37,6 +37,11 @@ SOURCES += \
         Tasks/Gamming_CFB/encodegammingcipherfeedbacktask.cpp \
         Tasks/Gamming_OFB/decodegammingoutputfeedbacktask.cpp \
         Tasks/Gamming_OFB/encodegammingoutputfeedbacktask.cpp \
+        Tasks/Message_Authentication_Code/CBC_MAC/cbcmactask.cpp \
+        Tasks/Message_Authentication_Code/ECB_MAC/ecbmactask.cpp \
+        Tasks/Message_Authentication_Code/GammingCFB_MAC/gammingcfbmactask.cpp \
+        Tasks/Message_Authentication_Code/GammingOFB_MAC/gammingofbmactask.cpp \
+        Tasks/Message_Authentication_Code/Gamming_MAC/gamminmactask.cpp \
         main.cpp \
         mainwindow.cpp
 
@@ -53,6 +58,11 @@ HEADERS += \
         Tasks/Gamming_CFB/encodegammingcipherfeedbacktask.h \
         Tasks/Gamming_OFB/decodegammingoutputfeedbacktask.h \
         Tasks/Gamming_OFB/encodegammingoutputfeedbacktask.h \
+        Tasks/Message_Authentication_Code/CBC_MAC/cbcmactask.h \
+        Tasks/Message_Authentication_Code/ECB_MAC/ecbmactask.h \
+        Tasks/Message_Authentication_Code/GammingCFB_MAC/gammingcfbmactask.h \
+        Tasks/Message_Authentication_Code/GammingOFB_MAC/gammingofbmactask.h \
+        Tasks/Message_Authentication_Code/Gamming_MAC/gamminmactask.h \
         mainwindow.h
 
 # Default rules for deployment.

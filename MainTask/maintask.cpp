@@ -269,10 +269,51 @@ QBitArray MainTask::main32PCicleDecode(const QBitArray& text, const std::vector<
     return res;
 }
 
+QBitArray MainTask::main163Cicle(const QBitArray& text, const std::vector<QBitArray>& key)
+{
+    // Creates two 32 bits arrays N1 and N2 and fill them in reverse order
+    QBitArray N1(32);
+    QBitArray N2(32);
+    for (int i = 0; i < 32; ++i) {
+        N1.setBit(i, text.at(31 - i));
+        N2.setBit(i, text.at(63 - i));
+    }
 
-QBitArray main163Cicle();
+    // Then we have 16 rounds of encryption
+    // 16 rounds use X0 X1 X2 X3 X4 X5 X6 X7 2 times
+    for (int j = 0; j < 16; ++j) {
+        // Save N1 source value
+        QBitArray tempN1(N1);
 
+        // Choose the right Xj (depends on round number)
+        QBitArray X = key[j % 8];
 
+        // Sum N1 and X mod 2^32 and result saves in N1
+        N1 = summatorCM1mod2pow32(N1, X);
+
+        // All bytes in N1 changes it's value with the S matrix and result saves in N1
+        N1 = kTransformBlock(N1);
+
+        // Round rotate N1 on 11 bits to elder bits and result saves in N1
+        N1 = rRotation11Block(N1);
+
+        // Sum N1 and N2 mod 2 and result saves in N1
+        N1 = summatorCM2mod2(N1, N2);
+
+        // Return old N1 value to N2
+        N2 = tempN1;
+
+    }
+
+    // Create result block array in normal order to return
+    QBitArray res(64);
+    for (int i = 0; i < 32; ++i) {
+        res.setBit(i, N1.at(31 - i));
+        res.setBit(i + 32, N2.at(31 - i));
+    }
+
+    return res;
+}
 
 QBitArray MainTask::summatorCM1mod2pow32(const QBitArray& N1, const QBitArray& X)
 {

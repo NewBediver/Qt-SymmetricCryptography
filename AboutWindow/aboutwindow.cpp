@@ -11,7 +11,7 @@ AboutWindow::AboutWindow(QWidget *parent) : QWidget(parent)
     programNameLabel = new QLabel("Program name:");
     programName = new QLabel("Symmetric cryptography");
     versionLabel = new QLabel("Version:");
-    version = new QLabel("0.10");
+    version = new QLabel("0.11");
     publishingDateLabel = new QLabel("Publishing date:");
     publishingDate = new QLabel(QDateTime(QDate(2019, 9, 14)).date().toString());
     lastChangeDateLabel = new QLabel("Latest changes:");

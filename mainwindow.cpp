@@ -10,6 +10,11 @@
 #include "Tasks/CBC/decodecipherblockchaining.h"
 #include "Tasks/Gamming_CFB/encodegammingcipherfeedbacktask.h"
 #include "Tasks/Gamming_CFB/decodegammingcipherfeedbacktask.h"
+#include "Tasks/Message_Authentication_Code/ECB_MAC/ecbmactask.h"
+#include "Tasks/Message_Authentication_Code/CBC_MAC/cbcmactask.h"
+#include "Tasks/Message_Authentication_Code/Gamming_MAC/gamminmactask.h"
+#include "Tasks/Message_Authentication_Code/GammingOFB_MAC/gammingofbmactask.h"
+#include "Tasks/Message_Authentication_Code/GammingCFB_MAC/gammingcfbmactask.h"
 #include "AboutWindow/aboutwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -34,6 +39,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(decodeCipherBlockChainingAction, SIGNAL(triggered()), this, SLOT(createDecodeCipherBlockChainingTask()));
     connect(encodeGammingCipherFeedbackAction, SIGNAL(triggered()), this, SLOT(createEncodeGammingCipherFeedbackTask()));
     connect(decodeGammingCipherFeedbackAction, SIGNAL(triggered()), this, SLOT(createDecodeGammingCipherFeedbackTask()));
+    connect(messageAuthenticationCodeECBAction, SIGNAL(triggered()), this, SLOT(createECBMACTask()));
+    connect(messageAuthenticationCodeCBCAction, SIGNAL(triggered()), this, SLOT(createCBCMACTask()));
+    connect(messageAuthenticationCodeGammingAction, SIGNAL(triggered()), this, SLOT(createGammingMACTask()));
+    connect(messageAuthenticationCodeGammingOFBAction, SIGNAL(triggered()), this, SLOT(createGammingOFBMACTask()));
+    connect(messageAuthenticationCodeGammingCFBAction, SIGNAL(triggered()), this, SLOT(createGammingCFBMACTask()));
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(createAboutWindow()));
 }
 
@@ -50,9 +60,10 @@ void MainWindow::createMenuBar()
     gammingMenu = createMenuElement<QMenu>("&Gamming", "Use GOST 28147-89 in gamming mode.", ":/res/menuIcon.png");
     gammingOutputFeedbackMenu = createMenuElement<QMenu>("&Gamming OFB", "Use GOST 28147-89 in gamming Output FeedBack mode.", ":/res/menuIcon.png");
     cipherBlockChainingMenu = createMenuElement<QMenu>("&CBC", "Use GOST 28147-89 in Cipher Block Chaining mode.", ":/res/menuIcon.png");
-    gammingCipherFeedbackMenu = createMenuElement<QMenu>("&Gamming CFB", "Use GOST 28147-89 in gamming Cipher FeedBAck mode.", ":/res/menuIcon.png");
+    gammingCipherFeedbackMenu = createMenuElement<QMenu>("&Gamming CFB", "Use GOST 28147-89 in gamming Cipher FeedBack mode.", ":/res/menuIcon.png");
+    messageAuthenticationCodeMenu = createMenuElement<QMenu>("&Message Authentication Code", "Use GOST 28147-89 in Message Authentication Code mode.", ":/res/menuIcon.png");
 
-    //Create actions to electronicCodeBookAction
+    //Create actions to L2 menues
     encodeElectronicCodeBookAction = createMenuElement<QAction>("&Encode", "Use GOST 28147-89 in ECB mode to encode some information.", ":/res/encodeIcon.png");
     decodeElectronicCodeBookAction = createMenuElement<QAction>("&Decode", "Use GOST 28147-89 in ECB mode to decode some information.", ":/res/decodeIcon.png");
     encodeGammingAction = createMenuElement<QAction>("&Encode", "Use GOST 28147-89 in gamming mode to encode some information.", ":/res/encodeIcon.png");
@@ -63,6 +74,11 @@ void MainWindow::createMenuBar()
     decodeCipherBlockChainingAction = createMenuElement<QAction>("&Decode", "Use GOST 28147-89 in CBC mode to decode some information.", ":/res/decodeIcon.png");
     encodeGammingCipherFeedbackAction = createMenuElement<QAction>("&Encode", "Use GOST 28147-89 in gamming CFB mode to encode some information.", ":/res/encodeIcon.png");
     decodeGammingCipherFeedbackAction = createMenuElement<QAction>("&Decode", "Use GOST 28147-89 in gamming CFB mode to decode some information.", ":/res/decodeIcon.png");
+    messageAuthenticationCodeECBAction = createMenuElement<QAction>("&ECB-MAC", "Use GOST 28147-89 in ECB-MAC mode to encode some information.", ":/res/encodeIcon.png");
+    messageAuthenticationCodeCBCAction = createMenuElement<QAction>("&CBC-MAC", "Use GOST 28147-89 in CBC-MAC mode to encode some information.", ":/res/encodeIcon.png");
+    messageAuthenticationCodeGammingAction = createMenuElement<QAction>("&Gamming-MAC", "Use GOST 28147-89 in Gamming-MAC mode to encode some information.", ":/res/encodeIcon.png");
+    messageAuthenticationCodeGammingOFBAction = createMenuElement<QAction>("&Gamming OFB-MAC", "Use GOST 28147-89 in Gamming OFB-MAC mode to encode some information.", ":/res/encodeIcon.png");
+    messageAuthenticationCodeGammingCFBAction = createMenuElement<QAction>("&Gamming CFB-MAC", "Use GOST 28147-89 in Gamming CFB-MAC mode to encode some information.", ":/res/encodeIcon.png");
 
     //Create action for credits menu
     aboutAction = createMenuElement<QAction>("&About", "Show information about author.");
@@ -78,13 +94,21 @@ void MainWindow::createMenuBar()
     cipherBlockChainingMenu->addAction(decodeCipherBlockChainingAction);
     gammingCipherFeedbackMenu->addAction(encodeGammingCipherFeedbackAction);
     gammingCipherFeedbackMenu->addAction(decodeGammingCipherFeedbackAction);
+    messageAuthenticationCodeMenu->addAction(messageAuthenticationCodeECBAction);
+    messageAuthenticationCodeMenu->addAction(messageAuthenticationCodeCBCAction);
+    messageAuthenticationCodeMenu->addAction(messageAuthenticationCodeGammingAction);
+    messageAuthenticationCodeMenu->addAction(messageAuthenticationCodeGammingOFBAction);
+    messageAuthenticationCodeMenu->addAction(messageAuthenticationCodeGammingCFBAction);
 
     //Add L2 menues to L1 menu
-    magmaMenu->addMenu(electronicCodeBookMenu);
+    magmaMenu->addMenu(electronicCodeBookMenu);    
+    magmaMenu->addMenu(cipherBlockChainingMenu);
+    magmaMenu->addSeparator();
     magmaMenu->addMenu(gammingMenu);
     magmaMenu->addMenu(gammingOutputFeedbackMenu);
-    magmaMenu->addMenu(cipherBlockChainingMenu);
     magmaMenu->addMenu(gammingCipherFeedbackMenu);
+    magmaMenu->addSeparator();
+    magmaMenu->addMenu(messageAuthenticationCodeMenu);
 
     //Add L1 menues to menu bar
     menuBar->addMenu(magmaMenu);
@@ -214,6 +238,51 @@ void MainWindow::createDecodeGammingCipherFeedbackTask()
     MainWindow::setCentralWidget(centralWidget);
 }
 
+void MainWindow::createECBMACTask()
+{
+    if (centralWidget != nullptr) {
+        delete centralWidget;
+    }
+    centralWidget = new ECBMACTask(this);
+    MainWindow::setCentralWidget(centralWidget);
+}
+
+void MainWindow::createCBCMACTask()
+{
+    if (centralWidget != nullptr) {
+        delete centralWidget;
+    }
+    centralWidget = new CBCMACTask(this);
+    MainWindow::setCentralWidget(centralWidget);
+}
+
+void MainWindow::createGammingMACTask()
+{
+    if (centralWidget != nullptr) {
+        delete centralWidget;
+    }
+    centralWidget = new GammingMACTask(this);
+    MainWindow::setCentralWidget(centralWidget);
+}
+
+void MainWindow::createGammingOFBMACTask()
+{
+    if (centralWidget != nullptr) {
+        delete centralWidget;
+    }
+    centralWidget = new GammingOFBMACTask(this);
+    MainWindow::setCentralWidget(centralWidget);
+}
+
+void MainWindow::createGammingCFBMACTask()
+{
+    if (centralWidget != nullptr) {
+        delete centralWidget;
+    }
+    centralWidget = new GammingCFBMACTask(this);
+    MainWindow::setCentralWidget(centralWidget);
+}
+
 void MainWindow::createAboutWindow()
 {
     if (centralWidget != nullptr) {
@@ -222,6 +291,8 @@ void MainWindow::createAboutWindow()
     centralWidget = new AboutWindow(this);
     MainWindow::setCentralWidget(centralWidget);
 }
+
+
 
 MainWindow::~MainWindow()
 {
@@ -234,6 +305,7 @@ MainWindow::~MainWindow()
     delete gammingOutputFeedbackMenu;
     delete cipherBlockChainingMenu;
     delete gammingCipherFeedbackMenu;
+    delete messageAuthenticationCodeMenu;
     delete encodeElectronicCodeBookAction;
     delete decodeElectronicCodeBookAction;
     delete encodeGammingAction;
@@ -244,5 +316,10 @@ MainWindow::~MainWindow()
     delete decodeCipherBlockChainingAction;
     delete encodeGammingCipherFeedbackAction;
     delete decodeGammingCipherFeedbackAction;
+    delete messageAuthenticationCodeECBAction;
+    delete messageAuthenticationCodeCBCAction;
+    delete messageAuthenticationCodeGammingAction;
+    delete messageAuthenticationCodeGammingOFBAction;
+    delete messageAuthenticationCodeGammingCFBAction;
     delete aboutAction;
 }

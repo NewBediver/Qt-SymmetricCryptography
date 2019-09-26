@@ -4,5 +4,6 @@
         <file>encodeIcon.png</file>
         <file>decodeIcon.png</file>
         <file>appIcon.png</file>
+        <file>L3MenuIcon.png</file>
     </qresource>
 </RCC>

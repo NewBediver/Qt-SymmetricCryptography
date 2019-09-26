@@ -62,7 +62,7 @@ protected:
     // Main decode cicle (First parameter: 64-bits text, second parameter: 256-bits key)
     QBitArray main32PCicleDecode(const QBitArray&, const std::vector<QBitArray>&);
     // Main half-encode cicle (First parameter: 64-bits text, second parameter: 256-bits key)
-    //QBitArray main163Cicle(const QBitArray&, const std::vector<QBitArray>&);
+    QBitArray main163Cicle(const QBitArray&, const std::vector<QBitArray>&);
 
 
     // Creates vector of eight 32 bits arrays of key from input and fill them in reverse order
