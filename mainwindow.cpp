@@ -10,8 +10,6 @@
 #include "Tasks/CBC/decodecipherblockchaining.h"
 #include "Tasks/Gamming_CFB/encodegammingcipherfeedbacktask.h"
 #include "Tasks/Gamming_CFB/decodegammingcipherfeedbacktask.h"
-#include "Tasks/Imitation_Insert/encodeimitationinserttask.h"
-#include "Tasks/Imitation_Insert/decodeimitationinserttask.h"
 #include "AboutWindow/aboutwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -36,8 +34,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(decodeCipherBlockChainingAction, SIGNAL(triggered()), this, SLOT(createDecodeCipherBlockChainingTask()));
     connect(encodeGammingCipherFeedbackAction, SIGNAL(triggered()), this, SLOT(createEncodeGammingCipherFeedbackTask()));
     connect(decodeGammingCipherFeedbackAction, SIGNAL(triggered()), this, SLOT(createDecodeGammingCipherFeedbackTask()));
-    connect(encodeImitationInsertAction, SIGNAL(triggered()), this, SLOT(createEncodeImitationInsertTask()));
-    connect(decodeImitationInsertAction, SIGNAL(triggered()), this, SLOT(createDecodeImitationInsertTask()));
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(createAboutWindow()));
 }
 
@@ -55,7 +51,6 @@ void MainWindow::createMenuBar()
     gammingOutputFeedbackMenu = createMenuElement<QMenu>("&Gamming OFB", "Use GOST 28147-89 in gamming Output FeedBack mode.", ":/res/menuIcon.png");
     cipherBlockChainingMenu = createMenuElement<QMenu>("&CBC", "Use GOST 28147-89 in Cipher Block Chaining mode.", ":/res/menuIcon.png");
     gammingCipherFeedbackMenu = createMenuElement<QMenu>("&Gamming CFB", "Use GOST 28147-89 in gamming Cipher FeedBAck mode.", ":/res/menuIcon.png");
-    imitationInsertMenu = createMenuElement<QMenu>("&Imitation Insert", "Use GOST 28147-89 in imitation insert mode.", ":/res/menuIcon.png");
 
     //Create actions to electronicCodeBookAction
     encodeElectronicCodeBookAction = createMenuElement<QAction>("&Encode", "Use GOST 28147-89 in ECB mode to encode some information.", ":/res/encodeIcon.png");
@@ -68,8 +63,6 @@ void MainWindow::createMenuBar()
     decodeCipherBlockChainingAction = createMenuElement<QAction>("&Decode", "Use GOST 28147-89 in CBC mode to decode some information.", ":/res/decodeIcon.png");
     encodeGammingCipherFeedbackAction = createMenuElement<QAction>("&Encode", "Use GOST 28147-89 in gamming CFB mode to encode some information.", ":/res/encodeIcon.png");
     decodeGammingCipherFeedbackAction = createMenuElement<QAction>("&Decode", "Use GOST 28147-89 in gamming CFB mode to decode some information.", ":/res/decodeIcon.png");
-    encodeImitationInsertAction = createMenuElement<QAction>("&Encode", "Use GOST 28147-89 in imitation insert mode to encode some information.", ":/res/encodeIcon.png");
-    decodeImitationInsertAction = createMenuElement<QAction>("&Decode", "Use GOST 28147-89 in imitation insert mode to decode some information.", ":/res/decodeIcon.png");
 
     //Create action for credits menu
     aboutAction = createMenuElement<QAction>("&About", "Show information about author.");
@@ -85,8 +78,6 @@ void MainWindow::createMenuBar()
     cipherBlockChainingMenu->addAction(decodeCipherBlockChainingAction);
     gammingCipherFeedbackMenu->addAction(encodeGammingCipherFeedbackAction);
     gammingCipherFeedbackMenu->addAction(decodeGammingCipherFeedbackAction);
-    imitationInsertMenu->addAction(encodeImitationInsertAction);
-    imitationInsertMenu->addAction(decodeImitationInsertAction);
 
     //Add L2 menues to L1 menu
     magmaMenu->addMenu(electronicCodeBookMenu);
@@ -94,7 +85,6 @@ void MainWindow::createMenuBar()
     magmaMenu->addMenu(gammingOutputFeedbackMenu);
     magmaMenu->addMenu(cipherBlockChainingMenu);
     magmaMenu->addMenu(gammingCipherFeedbackMenu);
-    magmaMenu->addMenu(imitationInsertMenu);
 
     //Add L1 menues to menu bar
     menuBar->addMenu(magmaMenu);
@@ -224,24 +214,6 @@ void MainWindow::createDecodeGammingCipherFeedbackTask()
     MainWindow::setCentralWidget(centralWidget);
 }
 
-void MainWindow::createEncodeImitationInsertTask()
-{
-    if (centralWidget != nullptr) {
-        delete centralWidget;
-    }
-    centralWidget = new EncodeImitationInsertTask(this);
-    MainWindow::setCentralWidget(centralWidget);
-}
-
-void MainWindow::createDecodeImitationInsertTask()
-{
-    if (centralWidget != nullptr) {
-        delete centralWidget;
-    }
-    centralWidget = new DecodeImitationInsertTask(this);
-    MainWindow::setCentralWidget(centralWidget);
-}
-
 void MainWindow::createAboutWindow()
 {
     if (centralWidget != nullptr) {
@@ -262,7 +234,6 @@ MainWindow::~MainWindow()
     delete gammingOutputFeedbackMenu;
     delete cipherBlockChainingMenu;
     delete gammingCipherFeedbackMenu;
-    delete imitationInsertMenu;
     delete encodeElectronicCodeBookAction;
     delete decodeElectronicCodeBookAction;
     delete encodeGammingAction;
@@ -273,7 +244,5 @@ MainWindow::~MainWindow()
     delete decodeCipherBlockChainingAction;
     delete encodeGammingCipherFeedbackAction;
     delete decodeGammingCipherFeedbackAction;
-    delete encodeImitationInsertAction;
-    delete decodeImitationInsertAction;
     delete aboutAction;
 }

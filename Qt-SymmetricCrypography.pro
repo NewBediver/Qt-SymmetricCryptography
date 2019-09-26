@@ -37,8 +37,6 @@ SOURCES += \
         Tasks/Gamming_CFB/encodegammingcipherfeedbacktask.cpp \
         Tasks/Gamming_OFB/decodegammingoutputfeedbacktask.cpp \
         Tasks/Gamming_OFB/encodegammingoutputfeedbacktask.cpp \
-        Tasks/Imitation_Insert/decodeimitationinserttask.cpp \
-        Tasks/Imitation_Insert/encodeimitationinserttask.cpp \
         main.cpp \
         mainwindow.cpp
 
@@ -55,8 +53,6 @@ HEADERS += \
         Tasks/Gamming_CFB/encodegammingcipherfeedbacktask.h \
         Tasks/Gamming_OFB/decodegammingoutputfeedbacktask.h \
         Tasks/Gamming_OFB/encodegammingoutputfeedbacktask.h \
-        Tasks/Imitation_Insert/decodeimitationinserttask.h \
-        Tasks/Imitation_Insert/encodeimitationinserttask.h \
         mainwindow.h
 
 # Default rules for deployment.

@@ -9,6 +9,9 @@ class DecodeGammingOutputFeedbackTask : public MainTask
 public:
     explicit DecodeGammingOutputFeedbackTask(QWidget *parent = nullptr);
      ~DecodeGammingOutputFeedbackTask();
+
+public slots:
+    void mainMethod();
 };
 
 #endif // DECODEGAMMINGOUTPUTFEEDBACKTASK_H

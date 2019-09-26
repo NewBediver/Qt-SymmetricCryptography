@@ -9,6 +9,9 @@ class EncodeGammingCipherFeedbackTask : public MainTask
 public:
     explicit EncodeGammingCipherFeedbackTask(QWidget *parent = nullptr);
      ~EncodeGammingCipherFeedbackTask();
+
+public slots:
+    void mainMethod();
 };
 
 #endif // ENCODEGAMMINGCIPHERFEEDBACKTASK_H

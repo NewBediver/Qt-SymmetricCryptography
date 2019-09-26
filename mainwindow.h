@@ -15,7 +15,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = 0);
+    MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
 private:
@@ -49,7 +49,7 @@ private:
     QMenu* gammingOutputFeedbackMenu;   //(Output FeedBack, OFB)
     QMenu* cipherBlockChainingMenu;     //(Cipher Block Chaining, CBC)
     QMenu* gammingCipherFeedbackMenu;   //(Cipher Feedback, CFB)
-    QMenu* imitationInsertMenu;                     //
+    //QMenu* imitationInsertMenu;                     //
                                                     //
     // Encode/Decode actions                        //
     QAction* encodeElectronicCodeBookAction;        //
@@ -62,8 +62,8 @@ private:
     QAction* decodeCipherBlockChainingAction;       //
     QAction* encodeGammingCipherFeedbackAction;     //
     QAction* decodeGammingCipherFeedbackAction;     //
-    QAction* encodeImitationInsertAction;           //
-    QAction* decodeImitationInsertAction;           //
+    //QAction* encodeImitationInsertAction;           //
+    //QAction* decodeImitationInsertAction;           //
                                                     //
     // Credits action                               //
     QAction* aboutAction;                           //
@@ -81,8 +81,8 @@ private slots:
     void createDecodeCipherBlockChainingTask();       //
     void createEncodeGammingCipherFeedbackTask();     //
     void createDecodeGammingCipherFeedbackTask();     //
-    void createEncodeImitationInsertTask();           //
-    void createDecodeImitationInsertTask();           //
+    //void createEncodeImitationInsertTask();           //
+    //void createDecodeImitationInsertTask();           //
     void createAboutWindow();                         //
     //================================================//
 

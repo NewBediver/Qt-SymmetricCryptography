@@ -9,6 +9,9 @@ class DecodeGammingCipherFeedbackTask : public MainTask
 public:
     explicit DecodeGammingCipherFeedbackTask(QWidget *parent = nullptr);
      ~DecodeGammingCipherFeedbackTask();
+
+public slots:
+    void mainMethod();
 };
 
 

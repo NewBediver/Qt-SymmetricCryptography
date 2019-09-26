@@ -9,6 +9,9 @@ class EncodeGammingOutputFeedbackTask : public MainTask
 public:
     explicit EncodeGammingOutputFeedbackTask(QWidget *parent = nullptr);
      ~EncodeGammingOutputFeedbackTask();
+
+public slots:
+    void mainMethod();
 };
 
 #endif // ENCODEGAMMINGOUTPUTFEEDBACKTASK_H
