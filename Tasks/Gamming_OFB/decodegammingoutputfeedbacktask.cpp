@@ -29,24 +29,24 @@ void DecodeGammingOutputFeedbackTask::mainMethod()
     // Get number of blocks
     int numOfBlocks = textArray.length() / 8;
     for (int numOfBlock = 0; numOfBlock < numOfBlocks; ++numOfBlock) {
-        // Fill N3 and N4 from gammaBitArray
+        // Fill N3 and N4 from encodedSynchro
         QBitArray N3(32);
         QBitArray N4(32);
         for (int i = 0; i < 32; ++i) {
-            N3.setBit(i, gammaBitArray.at(31 - i));
-            N4.setBit(i, gammaBitArray.at(63 - i));
+            N3.setBit(i, gammaBitArray.at(32 + i));
+            N4.setBit(i, gammaBitArray.at(i));
         }
 
         QBitArray C1(32);
-        C1.setBit(7 , true);
-        C1.setBit(15, true);
-        C1.setBit(23, true);
-        C1.setBit(29, true);
+        C1.setBit(24, true);
+        C1.setBit(16, true);
+        C1.setBit(8, true);
+        C1.setBit(2, true);
         QBitArray C2(32);
-        C1.setBit(7 , true);
-        C1.setBit(15, true);
-        C1.setBit(23, true);
-        C1.setBit(31, true);
+        C1.setBit(24, true);
+        C1.setBit(16, true);
+        C1.setBit(8, true);
+        C1.setBit(0, true);
 
         // Sum N4 and C1 mod 2^32-1
         N4 = summatorCM4mod2pow32minus1(N4, C1);
@@ -55,8 +55,8 @@ void DecodeGammingOutputFeedbackTask::mainMethod()
 
         //Return values to gammaBitArray
         for (int i = 0; i < 32; ++i) {
-            gammaBitArray.setBit(i, N3.at(31 - i));
-            gammaBitArray.setBit(i + 32, N4.at(31-i));
+            gammaBitArray.setBit(32 + i, N3.at(i));
+            gammaBitArray.setBit(i, N4.at(i));
         }
 
         // Make main cycle and return encoded gamma in normal order

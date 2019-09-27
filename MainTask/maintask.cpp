@@ -113,12 +113,12 @@ bool MainTask::checkValidTaskTextEdit(QRegExp reg)
 
 QBitArray MainTask::main323CicleEncode(const QBitArray& text, const std::vector<QBitArray>& key)
 {
-    // Creates two 32 bits arrays N1 and N2 and fill them in reverse order
+    // Creates two 32 bits arrays N1 and N2 and fill them in normal order
     QBitArray N1(32);
     QBitArray N2(32);
     for (int i = 0; i < 32; ++i) {
-        N1.setBit(i, text.at(31 - i));
-        N2.setBit(i, text.at(63 - i));
+        N1.setBit(i, text.at(32 + i));
+        N2.setBit(i, text.at(i));
     }
 
     // Then we have 32 rounds of encryption
@@ -144,11 +144,10 @@ QBitArray MainTask::main323CicleEncode(const QBitArray& text, const std::vector<
 
         // Return old N1 value to N2
         N2 = tempN1;
-
     }
     // Last 8 rounds use X7 X6 X5 X4 X3 X2 X1 X0 1 time
     for (int j = 0; j < 8; ++j) {
-        // Save N1 source value
+        // Save N2 source value
         QBitArray tempN1(N1);
 
         // Choose the right Xj (depends on round number)
@@ -183,8 +182,8 @@ QBitArray MainTask::main323CicleEncode(const QBitArray& text, const std::vector<
     // Create result block array in normal order to return
     QBitArray res(64);
     for (int i = 0; i < 32; ++i) {
-        res.setBit(i, N1.at(31 - i));
-        res.setBit(i + 32, N2.at(31 - i));
+        res.setBit(i + 32, N1.at(i));
+        res.setBit(i, N2.at(i));
     }
 
     return res;
@@ -192,12 +191,12 @@ QBitArray MainTask::main323CicleEncode(const QBitArray& text, const std::vector<
 
 QBitArray MainTask::main32PCicleDecode(const QBitArray& text, const std::vector<QBitArray>& key)
 {
-    // Creates two 32 bits arrays N1 and N2 and fill them in reverse order
+    // Creates two 32 bits arrays N1 and N2 and fill them in normal order
     QBitArray N1(32);
     QBitArray N2(32);
     for (int i = 0; i < 32; ++i) {
-        N1.setBit(i, text.at(31 - i));
-        N2.setBit(i, text.at(63 - i));
+        N1.setBit(i, text.at(32 + i));
+        N2.setBit(i, text.at(i));
     }
 
     // Then we have 32 rounds of decryption
@@ -262,8 +261,8 @@ QBitArray MainTask::main32PCicleDecode(const QBitArray& text, const std::vector<
     // Create result block array in normal order to return
     QBitArray res(64);
     for (int i = 0; i < 32; ++i) {
-        res.setBit(i, N1.at(31 - i));
-        res.setBit(i + 32, N2.at(31 - i));
+        res.setBit(i + 32, N1.at(i));
+        res.setBit(i, N2.at(i));
     }
 
     return res;
@@ -271,12 +270,12 @@ QBitArray MainTask::main32PCicleDecode(const QBitArray& text, const std::vector<
 
 QBitArray MainTask::main163Cicle(const QBitArray& text, const std::vector<QBitArray>& key)
 {
-    // Creates two 32 bits arrays N1 and N2 and fill them in reverse order
+    // Creates two 32 bits arrays N1 and N2 and fill them in normal order
     QBitArray N1(32);
     QBitArray N2(32);
     for (int i = 0; i < 32; ++i) {
-        N1.setBit(i, text.at(31 - i));
-        N2.setBit(i, text.at(63 - i));
+        N1.setBit(i, text.at(32 + i));
+        N2.setBit(i, text.at(i));
     }
 
     // Then we have 16 rounds of encryption
@@ -308,8 +307,8 @@ QBitArray MainTask::main163Cicle(const QBitArray& text, const std::vector<QBitAr
     // Create result block array in normal order to return
     QBitArray res(64);
     for (int i = 0; i < 32; ++i) {
-        res.setBit(i, N1.at(31 - i));
-        res.setBit(i + 32, N2.at(31 - i));
+        res.setBit(i + 32, N1.at(i));
+        res.setBit(i, N2.at(i));
     }
 
     return res;
@@ -461,40 +460,31 @@ QBitArray MainTask::kTransformBlock(const QBitArray& N1)
 {
     // S-matrix
     unsigned char S[8][16] = {
-        {0x09, 0x03, 0x03, 0x02, 0x08, 0x0B, 0x01, 0x07, 0x0A, 0x04, 0x0E, 0x0F, 0x0C, 0x00, 0x0D, 0x05},
-        {0x03, 0x07, 0x0E, 0x09, 0x08, 0x0A, 0x0F, 0x00, 0x05, 0x02, 0x06, 0x0C, 0x0B, 0x04, 0x0D, 0x01},
-        {0x0E, 0x04, 0x06, 0x02, 0x0B, 0x03, 0x0D, 0x08, 0x0C, 0x0F, 0x05, 0x0A, 0x00, 0x07, 0x01, 0x09},
-        {0x0E, 0x07, 0x0A, 0x0C, 0x0D, 0x01, 0x03, 0x09, 0x00, 0x02, 0x0B, 0x04, 0x0F, 0x08, 0x05, 0x06},
-        {0x0B, 0x05, 0x01, 0x09, 0x08, 0x0D, 0x0F, 0x00, 0x0E, 0x04, 0x02, 0x03, 0x0C, 0x07, 0x0A, 0x06},
-        {0x03, 0x0A, 0x0D, 0x0C, 0x01, 0x02, 0x00, 0x0B, 0x07, 0x05, 0x09, 0x04, 0x08, 0x0F, 0x0E, 0x06},
-        {0x01, 0x0D, 0x02, 0x09, 0x07, 0x0A, 0x06, 0x00, 0x08, 0x0C, 0x04, 0x05, 0x0F, 0x03, 0x0B, 0x0E},
-        {0x0B, 0x0A, 0x0F, 0x05, 0x00, 0x0C, 0x0E, 0x08, 0x06, 0x02, 0x03, 0x09, 0x01, 0x07, 0x0D, 0x04}
+        {12, 4, 6, 2, 10, 5, 11, 9, 14, 8, 13, 7, 0, 3, 15, 1},
+        {6, 8, 2, 3, 9, 10, 5, 12, 1, 14, 4, 7, 1, 13, 0, 15},
+        {11, 3, 5, 8, 2, 15, 10, 13, 14, 1, 7, 4, 12, 9, 6, 0},
+        {12, 8, 2, 1, 13, 4, 15, 6, 7, 0, 10, 5, 3, 14, 9, 11},
+        {7, 15, 5, 10, 8, 1, 6, 13, 0, 9, 3, 14, 11, 4, 2, 12},
+        {5, 13, 15, 6, 9, 2, 12, 10, 11, 7, 8, 1, 4, 3, 14, 0},
+        {8, 14, 2, 5, 6, 9, 1, 12, 15, 4, 11, 0, 13, 10, 3, 7},
+        {1, 7, 14, 13, 0, 5, 8, 3, 4, 15, 10, 6, 9, 12, 11, 2}
     };
 
     QBitArray res(32);
 
-    int firstPartByte, secPartByte;
-    for (int i = 0; i < 4; i++)
+    int fourBitBlock;
+    for (int i = 0; i < 8; i++)
     {
-        firstPartByte = 0;
-        secPartByte = 0;
-        // Takes the first 4-bits part of byte
-        for (int j = i * 8; j <= i * 8 + 3; ++j){
-            firstPartByte |= (N1.at(j) << ((i * 8 + 3) - j));
+        fourBitBlock = 0;
+        // Takes first 4 bits
+        for (int j = i * 4; j < i * 4 + 4; ++j) {
+            fourBitBlock |= (N1[j] << (i * 4 + 3 - j));
         }
-        // Takes the second 4-bits part of byte
-        for (int j = i * 8 + 4; j <= i * 8 + 7; ++j){
-            secPartByte |= (N1.at(j) << ((i * 8 + 7) - j));
-        }
-        // Makes the swap whis the S matrix
-        firstPartByte = S[i * 2][firstPartByte];
-        secPartByte = S[i * 2 + 1][secPartByte];
-        // Concatenates two 4-bits parts back to byte
-        for (int j = i * 8; j <= i * 8 + 3; ++j) {
-            res[j] = (firstPartByte >> ((i * 8 + 3) - j)) & 0x01;
-        }
-        for (int j = i * 8 + 4; j <= i * 8 + 7; ++j) {
-            res[j] = (secPartByte >> ((i * 8 + 7) - j)) & 0x01;
+        //Takes new value from S
+        fourBitBlock = S[7 - i][fourBitBlock];
+        // Insert new value into the res
+        for (int j = 0; j < 4; ++j) {
+            res.setBit(i * 4 + j, (1 << (3 - j)) & fourBitBlock);
         }
     }
 
@@ -534,18 +524,18 @@ std::vector<QBitArray> MainTask::getKey()
     QByteArray keyArray = QByteArray::fromHex(keyLineEdit->text().toLatin1());
     keyArray.append(32 - keyArray.length(), 0x00);
 
-    // Creates vector of eight 32 bits arrays of key and fill them in reverse order
+    // Creates vector of eight 32 bits arrays of key and fill them in normal order
     std::vector<QBitArray> X(8, QBitArray(32));
-    for (int i = 3; i >= 0; --i) {
-        for (int j = 0; j <= 7; ++j) {
-            X[0].setBit((3 - i) * 8 + j, (1 << j) & keyArray[i]);
-            X[1].setBit((3 - i) * 8 + j, (1 << j) & keyArray[i + 4]);
-            X[2].setBit((3 - i) * 8 + j, (1 << j) & keyArray[i + 8]);
-            X[3].setBit((3 - i) * 8 + j, (1 << j) & keyArray[i + 12]);
-            X[4].setBit((3 - i) * 8 + j, (1 << j) & keyArray[i + 16]);
-            X[5].setBit((3 - i) * 8 + j, (1 << j) & keyArray[i + 20]);
-            X[6].setBit((3 - i) * 8 + j, (1 << j) & keyArray[i + 24]);
-            X[7].setBit((3 - i) * 8 + j, (1 << j) & keyArray[i + 28]);
+    for (int i = 0; i < 4; ++i) {
+        for (int j = 0; j < 8; ++j) {
+            X[0].setBit(i * 8 + j, (1 << (7 - j)) & keyArray[i]);
+            X[1].setBit(i * 8 + j, (1 << (7 - j)) & keyArray[i + 4]);
+            X[2].setBit(i * 8 + j, (1 << (7 - j)) & keyArray[i + 8]);
+            X[3].setBit(i * 8 + j, (1 << (7 - j)) & keyArray[i + 12]);
+            X[4].setBit(i * 8 + j, (1 << (7 - j)) & keyArray[i + 16]);
+            X[5].setBit(i * 8 + j, (1 << (7 - j)) & keyArray[i + 20]);
+            X[6].setBit(i * 8 + j, (1 << (7 - j)) & keyArray[i + 24]);
+            X[7].setBit(i * 8 + j, (1 << (7 - j)) & keyArray[i + 28]);
         }
     }
 
