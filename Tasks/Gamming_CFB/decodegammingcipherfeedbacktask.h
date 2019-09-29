@@ -14,5 +14,4 @@ public slots:
     void mainMethod();
 };
 
-
 #endif // DECODEGAMMINGCIPHERFEEDBACKTASK_H

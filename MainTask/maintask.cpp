@@ -110,7 +110,6 @@ bool MainTask::checkValidTaskTextEdit(QRegExp reg)
     return reg.exactMatch(taskTextEdit->toPlainText());
 }
 
-
 QBitArray MainTask::main323CicleEncode(const QBitArray& text, const std::vector<QBitArray>& key)
 {
     // Creates two 32 bits arrays N1 and N2 and fill them in normal order
