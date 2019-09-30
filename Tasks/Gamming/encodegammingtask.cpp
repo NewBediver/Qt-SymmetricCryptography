@@ -45,10 +45,10 @@ void EncodeGammingTask::mainMethod()
         C1.setBit(8, true);
         C1.setBit(2, true);
         QBitArray C2(32);
-        C1.setBit(24, true);
-        C1.setBit(16, true);
-        C1.setBit(8, true);
-        C1.setBit(0, true);
+        C2.setBit(24, true);
+        C2.setBit(16, true);
+        C2.setBit(8, true);
+        C2.setBit(0, true);
 
         // Sum N4 and C1 mod 2^32-1
         N4 = summatorCM4mod2pow32minus1(N4, C1);

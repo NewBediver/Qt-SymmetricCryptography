@@ -11,11 +11,11 @@ AboutWindow::AboutWindow(QWidget *parent) : QWidget(parent)
     programNameLabel = new QLabel("Program name:");
     programName = new QLabel("Symmetric cryptography");
     versionLabel = new QLabel("Version:");
-    version = new QLabel("0.20");
+    version = new QLabel("Release");
     publishingDateLabel = new QLabel("Publishing date:");
     publishingDate = new QLabel(QDateTime(QDate(2019, 9, 14)).date().toString());
     lastChangeDateLabel = new QLabel("Latest changes:");
-    lastChangeDate = new QLabel(QDateTime(QDate(2019, 9, 29)).date().toString());
+    lastChangeDate = new QLabel(QDateTime(QDate(2019, 9, 30)).date().toString());
 
     programInfoFormLayout = new QFormLayout();
     programInfoFormLayout->addRow(programNameLabel, programName);

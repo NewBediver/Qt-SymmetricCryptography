@@ -25,7 +25,7 @@ void ECBMACTask::mainMethod()
 
     // If we got less than 2 blocks of data
     if (numOfBlocks < 2) {
-        resultTextEdit->setPlainText("Enter more than 64 bytes of data!");
+        resultTextEdit->setPlainText("Enter more than 64 bits of data!");
         return;
     }
 
@@ -42,7 +42,7 @@ void ECBMACTask::mainMethod()
         // Make main cycle and return encoded text in normal order
         QBitArray nextEncodedBlock = main163Cicle(textBlockBitArray, X);
 
-        // Xor cuurent encoded data with the next block
+        // Xor current encoded data with the next block
         encodedBlock = summatorCM5mod2(encodedBlock, nextEncodedBlock);
     }
 

@@ -18,14 +18,12 @@ void GammingMACTask::mainMethod()
     // Text array (divisible on 8 * 8 = 64 bits)
     QByteArray textArray = getText();
 
-    QByteArray resultText;
-
     // Get number of blocks
     int numOfBlocks = textArray.length() / 8;
 
     // If we got less than 2 blocks of data
     if (numOfBlocks < 2) {
-        resultTextEdit->setPlainText("Enter more than 64 bytes of data!");
+        resultTextEdit->setPlainText("Enter more than 64 bits of data!");
         return;
     }
 
@@ -39,8 +37,8 @@ void GammingMACTask::mainMethod()
     QBitArray N3(32);
     QBitArray N4(32);
     for (int i = 0; i < 32; ++i) {
-        N3.setBit(i, encodedSynchro.at(31 - i));
-        N4.setBit(i, encodedSynchro.at(63-i));
+        N3.setBit(i, encodedSynchro.at(32 + i));
+        N4.setBit(i, encodedSynchro.at(i));
     }
 
     QBitArray encodedText;
@@ -53,10 +51,10 @@ void GammingMACTask::mainMethod()
         C1.setBit(23, true);
         C1.setBit(29, true);
         QBitArray C2(32);
-        C1.setBit(7 , true);
-        C1.setBit(15, true);
-        C1.setBit(23, true);
-        C1.setBit(31, true);
+        C2.setBit(7 , true);
+        C2.setBit(15, true);
+        C2.setBit(23, true);
+        C2.setBit(31, true);
 
         // Sum N4 and C1 mod 2^32-1
         N4 = summatorCM4mod2pow32minus1(N4, C1);
@@ -66,8 +64,8 @@ void GammingMACTask::mainMethod()
         //Return values to gammaBitArray
         QBitArray gammaBitArray(64);
         for (int i = 0; i < 32; ++i) {
-            gammaBitArray.setBit(i, N3.at(31 - i));
-            gammaBitArray.setBit(i + 32, N4.at(31 - i));
+            gammaBitArray.setBit(32 + i, N3.at(i));
+            gammaBitArray.setBit(i, N4.at(i));
         }
 
         // Make main cycle and return encoded gamma in normal order
@@ -77,7 +75,7 @@ void GammingMACTask::mainMethod()
         QBitArray textBlockBitArray = getBlockFromQByteArrayText(textArray, numOfBlock);
 
         if (numOfBlock == 0) {
-            // Xor first block of text wthi gamma
+            // Xor first block of text with gamma
             encodedText = summatorCM5mod2(encodedGamma, textBlockBitArray);
         }
         else {

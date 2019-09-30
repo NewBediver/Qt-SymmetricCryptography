@@ -18,14 +18,12 @@ void CBCMACTask::mainMethod()
     // Text array (divisible on 8 * 8 = 64 bits)
     QByteArray textArray = getText();
 
-    QByteArray resultText;
-
     // Get number of blocks
     int numOfBlocks = textArray.length() / 8;
 
     // If we got less than 2 blocks of data
     if (numOfBlocks < 2) {
-        resultTextEdit->setPlainText("Enter more than 64 bytes of data!");
+        resultTextEdit->setPlainText("Enter more than 64 bits of data!");
         return;
     }
 
@@ -39,7 +37,7 @@ void CBCMACTask::mainMethod()
         // Get block of data
         textBlockBitArray = getBlockFromQByteArrayText(textArray, numOfBlock);
 
-        // Xor cuurent encoded data with the next block
+        // Xor current encoded data with the next block
         textBlockBitArray = summatorCM5mod2(textBlockBitArray, encodedBlock);
 
         // Make main cycle and return encoded text in normal order
