@@ -2,6 +2,7 @@
 
 #include <QBitArray>
 #include <QByteArray>
+#include <QRegExpValidator>
 
 CBCMAC128Task::CBCMAC128Task(QWidget *parent) : MainTask(parent)
 {

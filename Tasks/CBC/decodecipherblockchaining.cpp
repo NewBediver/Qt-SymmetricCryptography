@@ -2,13 +2,22 @@
 
 #include <QByteArray>
 #include <QBitArray>
-#include <QCryptographicHash>
+#include <QRegExpValidator>
 
 DecodeCipherBlockChaining::DecodeCipherBlockChaining(QWidget* parent) : MainTask(parent)
 {
     changeTaskLabelText("Text to CBC decode:");
     changeResultLabelText("CBC decoded text:");
     changeMakeActionPushButtonText("Decode");
+
+    IVLabel->setText("Initial vector:");
+
+    IVLineEdit->setToolTip("Enter initial vector");
+    IVLineEdit->setValidator(new QRegExpValidator(QRegExp("[A-Fa-f0-9]{0,16}")));
+
+    IVLabel->setBuddy(IVLineEdit);
+
+    keyFormLayout->addRow(IVLabel, IVLineEdit);
 }
 
 void DecodeCipherBlockChaining::mainMethod()
@@ -20,7 +29,7 @@ void DecodeCipherBlockChaining::mainMethod()
     QByteArray textArray = getText();
 
     // Get IV vector from keyArray
-    QBitArray R1 = getInitializingVector(QByteArray::fromHex(keyLineEdit->text().toLatin1()));
+    QBitArray R1 = getInitializingVector(QByteArray::fromHex(IVLineEdit->text().toLatin1()));
 
     QByteArray resultText;
 

@@ -2,13 +2,22 @@
 
 #include <QBitArray>
 #include <QByteArray>
-#include <QCryptographicHash>
+#include <QRegExpValidator>
 
 EncodeGammingOutputFeedback128Task::EncodeGammingOutputFeedback128Task(QWidget* parent) : MainTask(parent)
 {
     changeTaskLabelText("Text to Gamming OFB encode:");
     changeResultLabelText("Gamming OFB encoded text:");
     changeMakeActionPushButtonText("Encode");
+
+    IVLabel->setText("Initial vector:");
+
+    IVLineEdit->setToolTip("Enter initial vector");
+    IVLineEdit->setValidator(new QRegExpValidator(QRegExp("[A-Fa-f0-9]{0,32}")));
+
+    IVLabel->setBuddy(IVLineEdit);
+
+    keyFormLayout->addRow(IVLabel, IVLineEdit);
 }
 
 void EncodeGammingOutputFeedback128Task::mainMethod()
@@ -20,7 +29,7 @@ void EncodeGammingOutputFeedback128Task::mainMethod()
     QByteArray textArray = getTextForKuznechik();
 
     // Get Synchro vector from keyArray
-    QBitArray Synchro = getInitializing128Vector(QByteArray::fromHex(keyLineEdit->text().toLatin1()));
+    QBitArray Synchro = getInitializing128Vector(QByteArray::fromHex(IVLineEdit->text().toLatin1()));
 
     // Make main cycle and return encoded Synchro text in normal order
     QBitArray gammaBitArray = kuznechikEncodeCicle(Synchro, X);

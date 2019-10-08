@@ -2,12 +2,22 @@
 
 #include <QBitArray>
 #include <QByteArray>
+#include <QRegExpValidator>
 
 GammingOFBMAC128Task::GammingOFBMAC128Task(QWidget *parent) : MainTask(parent)
 {
     changeTaskLabelText("Text to Gamming OFB-MAC encode:");
     changeResultLabelText("Gamming OFB-MAC encoded text:");
     changeMakeActionPushButtonText("Encode");
+
+    IVLabel->setText("Initial vector:");
+
+    IVLineEdit->setToolTip("Enter initial vector");
+    IVLineEdit->setValidator(new QRegExpValidator(QRegExp("[A-Fa-f0-9]{0,32}")));
+
+    IVLabel->setBuddy(IVLineEdit);
+
+    keyFormLayout->addRow(IVLabel, IVLineEdit);
 }
 
 void GammingOFBMAC128Task::mainMethod()
@@ -28,7 +38,7 @@ void GammingOFBMAC128Task::mainMethod()
     }
 
     // Get Synchro vector from keyArray
-    QBitArray Synchro = getInitializing128Vector(QByteArray::fromHex(keyLineEdit->text().toLatin1()));
+    QBitArray Synchro = getInitializing128Vector(QByteArray::fromHex(IVLineEdit->text().toLatin1()));
 
     // Make main cycle and return encoded Synchro text in normal order
     QBitArray encodedGamma = kuznechikEncodeCicle(Synchro, X);

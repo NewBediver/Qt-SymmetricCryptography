@@ -1,12 +1,14 @@
 #include "maintask.h"
 
 #include <QRegExpValidator>
-#include <QCryptographicHash>
 #include <QBitArray>
 #include <QByteArray>
 
 MainTask::MainTask(QWidget *parent) : QWidget(parent)
 {
+    IVLabel = new QLabel();
+    IVLineEdit = new QLineEdit();
+
     // Create warning label
     warningLabel = new QLabel();
     warningLabel->setText("ATTENTION! This program works only with HEX data. Please convert all your input into HEX format before you try to encode/decode it.");
@@ -509,11 +511,11 @@ QBitArray MainTask::rRotation11Block(const QBitArray& N1)
     return res;
 }
 
-QBitArray MainTask::getInitializingVector(const QByteArray& keyArray)
+QBitArray MainTask::getInitializingVector(const QByteArray& key)
 {
-    QCryptographicHash hashFunction(QCryptographicHash::Sha3_512);
-    QByteArray keyHash = hashFunction.hash(keyArray, QCryptographicHash::Sha3_512);
-    QByteArray initializationVectorArray = keyHash.mid(36, 8);
+    QByteArray keyArray(key);
+    keyArray.append(16 - keyArray.length(), 0x00);
+
     QBitArray res(64);
     for (int i = 0; i <= 7; ++i) {
         for (int j = 7; j >= 0; --j) {
@@ -980,11 +982,11 @@ QBitArray MainTask::kuznechikDecodeCicle(const QBitArray& text, const std::vecto
     return xConversionBlockForKuznechik(res, K.front());
 }
 
-QBitArray MainTask::getInitializing128Vector(const QByteArray& keyArray)
+QBitArray MainTask::getInitializing128Vector(const QByteArray& key)
 {
-    QCryptographicHash hashFunction(QCryptographicHash::Sha3_512);
-    QByteArray keyHash = hashFunction.hash(keyArray, QCryptographicHash::Sha3_512);
-    QByteArray initializationVectorArray = keyHash.mid(12, 16);
+    QByteArray keyArray(key);
+    keyArray.append(32 - keyArray.length(), 0x00);
+
     QBitArray res(128);
     for (int i = 0; i < 16; ++i) {
         for (int j = 7; j >= 0; --j) {
@@ -1024,6 +1026,8 @@ MainTask::~MainTask()
     delete taskLayout;    
     delete keyLabel;
     delete keyLineEdit;
+    delete IVLabel;
+    delete IVLineEdit;
     delete keyFormLayout;
     delete mainLayout;  
 }

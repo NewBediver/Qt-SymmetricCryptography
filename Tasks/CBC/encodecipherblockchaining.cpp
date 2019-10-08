@@ -2,13 +2,22 @@
 
 #include <QBitArray>
 #include <QByteArray>
-#include <QCryptographicHash>
+#include <QRegExpValidator>
 
 EncodeCipherBlockChaining::EncodeCipherBlockChaining(QWidget* parent) : MainTask(parent)
 {
     changeTaskLabelText("Text to CBC encode:");
     changeResultLabelText("CBC encoded text:");
     changeMakeActionPushButtonText("Encode");
+
+    IVLabel->setText("Initial vector:");
+
+    IVLineEdit->setToolTip("Enter initial vector");
+    IVLineEdit->setValidator(new QRegExpValidator(QRegExp("[A-Fa-f0-9]{0,16}")));
+
+    IVLabel->setBuddy(IVLineEdit);
+
+    keyFormLayout->addRow(IVLabel, IVLineEdit);
 }
 
 void EncodeCipherBlockChaining::mainMethod()
@@ -20,7 +29,7 @@ void EncodeCipherBlockChaining::mainMethod()
     QByteArray textArray = getText();
 
     // Get IV vector from keyArray
-    QBitArray R1 = getInitializingVector(QByteArray::fromHex(keyLineEdit->text().toLatin1()));
+    QBitArray R1 = getInitializingVector(QByteArray::fromHex(IVLineEdit->text().toLatin1()));
 
     QByteArray resultText;
 

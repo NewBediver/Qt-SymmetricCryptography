@@ -38,6 +38,10 @@ protected:
     QFormLayout* keyFormLayout;              //
     //=======================================//
 
+    // Only when need initial vector
+    QLabel* IVLabel;
+    QLineEdit* IVLineEdit;
+
     //===================================Parts of encryption/decryption schemas for Magma==========================================//
     // Sum const QBitArray& and const QBitArray& mod 2^32 and result returns in QBitArray                                          //
     QBitArray summatorCM1mod2pow32(const QBitArray&, const QBitArray&);                                                            //

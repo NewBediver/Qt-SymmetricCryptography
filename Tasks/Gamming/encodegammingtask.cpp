@@ -2,13 +2,22 @@
 
 #include <QBitArray>
 #include <QByteArray>
-#include <QCryptographicHash>
+#include <QRegExpValidator>
 
 EncodeGammingTask::EncodeGammingTask(QWidget* parent) : MainTask(parent)
 {
     changeTaskLabelText("Text to Gamming encode:");
     changeResultLabelText("Gamming encoded text:");
     changeMakeActionPushButtonText("Encode");
+
+    IVLabel->setText("Initial vector:");
+
+    IVLineEdit->setToolTip("Enter initial vector");
+    IVLineEdit->setValidator(new QRegExpValidator(QRegExp("[A-Fa-f0-9]{0,16}")));
+
+    IVLabel->setBuddy(IVLineEdit);
+
+    keyFormLayout->addRow(IVLabel, IVLineEdit);
 }
 
 void EncodeGammingTask::mainMethod()
@@ -20,7 +29,7 @@ void EncodeGammingTask::mainMethod()
     QByteArray textArray = getText();
 
     // Get Synchro vector from keyArray
-    QBitArray Synchro = getInitializingVector(QByteArray::fromHex(keyLineEdit->text().toLatin1()));
+    QBitArray Synchro = getInitializingVector(QByteArray::fromHex(IVLineEdit->text().toLatin1()));
 
     // Make main cycle and return encoded Synchro text in normal order
     QBitArray encodedSynchro = main323CicleEncode(Synchro, X);
