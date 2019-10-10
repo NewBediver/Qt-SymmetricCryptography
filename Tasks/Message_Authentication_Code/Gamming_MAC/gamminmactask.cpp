@@ -56,15 +56,15 @@ void GammingMACTask::mainMethod()
     for (int numOfBlock = 0; numOfBlock < numOfBlocks; ++numOfBlock) {
 
         QBitArray C1(32);
-        C1.setBit(7 , true);
-        C1.setBit(15, true);
-        C1.setBit(23, true);
-        C1.setBit(29, true);
+        C1.setBit(24, true);
+        C1.setBit(16, true);
+        C1.setBit(8, true);
+        C1.setBit(2, true);
         QBitArray C2(32);
-        C2.setBit(7 , true);
-        C2.setBit(15, true);
-        C2.setBit(23, true);
-        C2.setBit(31, true);
+        C2.setBit(24, true);
+        C2.setBit(16, true);
+        C2.setBit(8, true);
+        C2.setBit(0, true);
 
         // Sum N4 and C1 mod 2^32-1
         N4 = summatorCM4mod2pow32minus1(N4, C1);
@@ -79,7 +79,7 @@ void GammingMACTask::mainMethod()
         }
 
         // Make main cycle and return encoded gamma in normal order
-        QBitArray encodedGamma = main323CicleEncode(gammaBitArray, X);
+        QBitArray encodedGamma = main163Cicle(gammaBitArray, X);
 
         // Get block of data
         QBitArray textBlockBitArray = getBlockFromQByteArrayText(textArray, numOfBlock);
